@@ -496,7 +496,7 @@ setInterval(() => {
 
 // --- Chart Logic ---
 function loadTradingViewWidget(asset) {
-    const symbol = asset === 'BTC' ? 'BINANCE:BTCUSDT' : 'BINANCE:ETHUSDT';
+    const symbol = asset === 'BTC' ? 'BINANCEUS:BTCUSDT' : 'BINANCEUS:ETHUSDT';
     
     if (typeof TradingView === 'undefined') {
         document.getElementById('current-ticker-desc').textContent = 'TradingView script failed to load.';
