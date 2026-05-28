@@ -37,8 +37,8 @@ const INITIAL_SEED_MONEY = 100000000;
 // Fetch live prices every 4 seconds from Binance API
 async function fetchLivePrice() {
     try {
-        const btcRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
-        const ethRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT');
+        const btcRes = await fetch('https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT');
+        const ethRes = await fetch('https://api.binance.us/api/v3/ticker/price?symbol=ETHUSDT');
         
         const btcData = await btcRes.json();
         const ethData = await ethRes.json();
