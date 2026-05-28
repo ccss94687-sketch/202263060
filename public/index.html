@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q-TRADER | Crypto Simulator</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+</head>
+<body>
+    <!-- Auth Overlay -->
+    <div id="auth-overlay" class="auth-overlay">
+        <div class="auth-modal glass">
+            <h1 class="auth-title">Q-TRADER</h1>
+            <p class="auth-subtitle">모의 투자 시뮬레이터에 오신 것을 환영합니다.</p>
+            
+            <div class="input-group" style="margin-bottom: 20px;">
+                <label>아이디 (ID)</label>
+                <input type="text" id="auth-username" placeholder="아이디 입력">
+            </div>
+            <div class="input-group" style="margin-bottom: 30px;">
+                <label>비밀번호 (Password)</label>
+                <input type="password" id="auth-password" placeholder="비밀번호 입력">
+            </div>
+            
+            <div class="auth-buttons">
+                <button id="btn-login" class="btn btn-buy">로그인 (Login)</button>
+                <button id="btn-register" class="btn btn-sell">회원가입 (Register)</button>
+            </div>
+            <div id="auth-error" class="auth-error"></div>
+        </div>
+    </div>
+
+    <div class="app-container" id="app-container" style="display: none;">
+        <!-- Header / Dashboard -->
+        <header class="dashboard glass">
+            <div class="logo">
+                <div class="user-info" style="font-size: 14px; font-weight: 600; color: #fff;">
+                    [ 접속 중: <span id="current-username" style="color: var(--accent-buy);"></span> ]
+                </div>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 40px;">
+                <div class="metrics">
+                    <div class="metric-card">
+                        <span class="label">Total Asset</span>
+                        <span class="value" id="asset-display">$100,000,000.00</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="label">Available Cash</span>
+                        <span class="value" id="cash-display">$100,000,000.00</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="label">Unrealized P/L</span>
+                        <span class="value" id="pl-display">$0.00</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="label">Holdings (<span id="holdings-label">BTC</span>)</span>
+                        <span class="value" id="holdings-display">0</span>
+                    </div>
+                </div>
+                
+                <div class="header-actions">
+                    <button id="btn-logout" class="btn-cancel" style="padding: 8px 16px; font-size: 13px;">로그아웃</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="trading-layout">
+            <!-- Trading Panel -->
+            <section class="trading-panel glass">
+                <div class="tabs">
+                    <button class="tab-btn active" data-asset="BTC">BTC (Bitcoin)</button>
+                    <button class="tab-btn" data-asset="ETH">ETH (Ethereum)</button>
+                </div>
+
+                <div class="trade-header">
+                    <h2 id="current-asset-name">TRADE BTC (BITCOIN)</h2>
+                    <div class="current-price">
+                        <span class="ticker" id="current-ticker-desc">Bitcoin USDT (Binance)</span>
+                        <span class="price" id="current-price-display">Loading...</span>
+                    </div>
+                </div>
+
+                <div class="trade-columns">
+                    <!-- BUY Column -->
+                    <div class="trade-col">
+                        <div class="col-header buy-header">Buy Asset</div>
+                        <div class="input-group">
+                            <label for="quantity-buy">
+                                Shares 
+                                <button class="btn-max" id="btn-max-buy">MAX</button>
+                            </label>
+                            <input type="number" id="quantity-buy" min="1" step="1" placeholder="0">
+                        </div>
+                        <div class="total-display" style="margin-bottom: 5px;">
+                            <span>Total:</span>
+                            <span id="total-buy-display">$0.00</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; font-size: 13px; color: var(--text-secondary);">
+                            <span>Fee (0.05%):</span>
+                            <span id="fee-buy-display">$0.00</span>
+                        </div>
+                        <button id="btn-buy" class="btn btn-buy">BUY</button>
+                    </div>
+
+                    <!-- SELL Column -->
+                    <div class="trade-col">
+                        <div class="col-header sell-header">Sell Asset</div>
+                        <div class="input-group">
+                            <label for="quantity-sell">
+                                Shares 
+                                <button class="btn-max" id="btn-max-sell">MAX</button>
+                            </label>
+                            <input type="number" id="quantity-sell" min="1" step="1" placeholder="0">
+                        </div>
+                        <div class="total-display" style="margin-bottom: 5px;">
+                            <span>Total:</span>
+                            <span id="total-sell-display">$0.00</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; font-size: 13px; color: var(--text-secondary);">
+                            <span>Fee (0.05%):</span>
+                            <span id="fee-sell-display">$0.00</span>
+                        </div>
+                        <button id="btn-sell" class="btn btn-sell">SELL</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Column -->
+            <div class="right-column" style="display: flex; flex-direction: column; gap: 30px;">
+                <!-- Chart Panel -->
+                <section class="chart-panel glass" style="padding: 0; overflow: hidden; height: 380px;">
+                    <div id="tvchart" style="width: 100%; height: 100%;"></div>
+                </section>
+
+                <!-- Order History -->
+                <section class="order-history glass">
+                <h2>Order Book</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Asset</th>
+                                <th>Type</th>
+                                <th>Shares</th>
+                                <th>Price</th>
+                                <th>Total (+Fee)</th>
+                                <th>Status / Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="order-tbody">
+                            <!-- Orders will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div class="admin-container" id="admin-container" style="display: none; max-width: 1000px; margin: 0 auto; padding: 40px 20px;">
+        <header class="dashboard glass" style="margin-bottom: 20px;">
+            <div class="logo">
+                <h1 style="font-size: 24px; color: #fff;">Admin Dashboard</h1>
+            </div>
+            <div class="header-actions">
+                <button id="btn-admin-logout" class="btn-cancel" style="padding: 8px 16px;">로그아웃</button>
+            </div>
+        </header>
+        
+        <section class="glass" style="padding: 30px;">
+            <h2 style="margin-bottom: 20px;">User Management (유저 관리)</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">User ID (고유번호)</th>
+                            <th style="text-align: left;">Username (아이디)</th>
+                            <th>Total Asset (현재 총 자산)</th>
+                            <th>Available Cash (가용 현금)</th>
+                            <th>Action (관리)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-user-tbody">
+                        <!-- Admin users will be injected here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

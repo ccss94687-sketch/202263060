@@ -1,0 +1,52 @@
+{
+  "users": [
+    {
+      "id": "60b8c896-4f1b-49f8-833d-5df15942a3b0",
+      "username": "bbb",
+      "password": "$2b$10$GmagHwazF6zoptwD6ydQJOMcFyS6Lix9OZGLCXceJXnGIjS2n8BlO",
+      "seedMoney": 100000000
+    },
+    {
+      "id": "d0ed91d9-f4ac-4b63-b59b-3c0efb666b63",
+      "username": "aaa",
+      "password": "$2b$10$7XL2tVPkadxPqnSpg4Op.OjAvY/uVdFC3SwtvBmo87g1Qsc5A1df2",
+      "seedMoney": 100000000
+    }
+  ],
+  "orders": [
+    {
+      "id": "759d18d2-eeb8-4f9a-a83a-3704eaaa43dd",
+      "userId": "60b8c896-4f1b-49f8-833d-5df15942a3b0",
+      "type": "buy",
+      "asset": "ETH",
+      "quantity": 50523,
+      "price": 1979.27,
+      "totalAmount": 99998658.21,
+      "status": "active",
+      "timestamp": 1779945117014
+    },
+    {
+      "id": "106217c2-9d5d-4339-9aaa-8d36b5c21377",
+      "userId": "60b8c896-4f1b-49f8-833d-5df15942a3b0",
+      "type": "sell",
+      "asset": "ETH",
+      "quantity": 50523,
+      "price": 1980.2,
+      "totalAmount": 100045644.60000001,
+      "status": "active",
+      "timestamp": 1779945333549
+    },
+    {
+      "id": "c20906bf-6b3b-413d-804a-00732ca1b8e6",
+      "userId": "d0ed91d9-f4ac-4b63-b59b-3c0efb666b63",
+      "type": "buy",
+      "asset": "BTC",
+      "quantity": 1368,
+      "price": 73037.83,
+      "totalAmount": 99915751.44,
+      "fee": 49957.87572,
+      "status": "active",
+      "timestamp": 1779947628658
+    }
+  ]
+}

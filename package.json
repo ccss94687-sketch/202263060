@@ -1,0 +1,17 @@
+{
+  "name": "q-trader",
+  "version": "1.0.0",
+  "description": "Crypto Virtual Investment Web Simulator",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "express": "^4.19.0",
+    "jsonwebtoken": "^9.0.3",
+    "uuid": "^9.0.1",
+    "yahoo-finance2": "^2.11.3"
+  }
+}

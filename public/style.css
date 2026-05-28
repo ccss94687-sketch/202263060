@@ -1,0 +1,459 @@
+:root {
+    --bg-main: #0b0e14;
+    --bg-card: rgba(21, 25, 36, 0.7);
+    --text-primary: #e0e2e6;
+    --text-secondary: #848e9c;
+    --accent-buy: #0ecb81;
+    --accent-buy-hover: #0b9c63;
+    --accent-sell: #f6465d;
+    --accent-sell-hover: #c93649;
+    --border-color: rgba(43, 49, 57, 0.5);
+    --font-main: 'Inter', sans-serif;
+    --glass-blur: 12px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-main);
+    background-image: radial-gradient(circle at 15% 50%, rgba(14, 203, 129, 0.05), transparent 25%),
+                      radial-gradient(circle at 85% 30%, rgba(246, 70, 93, 0.05), transparent 25%);
+    background-attachment: fixed;
+    color: var(--text-primary);
+    font-family: var(--font-main);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+}
+
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+/* Glassmorphism utility */
+.glass {
+    background-color: var(--bg-card);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+    border-radius: 16px;
+}
+
+/* Dashboard */
+.dashboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+.logo h1 {
+    font-size: 28px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ffffff 0%, #848e9c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+}
+
+.badge {
+    font-size: 11px;
+    background: rgba(132, 142, 156, 0.2);
+    color: var(--text-secondary);
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    font-weight: 600;
+    vertical-align: top;
+    margin-left: 10px;
+    letter-spacing: 0.5px;
+}
+
+.metrics {
+    display: flex;
+    gap: 40px;
+}
+
+.metric-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.metric-card .label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.metric-card .value {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+/* Layout */
+.trading-layout {
+    display: grid;
+    grid-template-columns: 550px 1fr;
+    gap: 30px;
+}
+
+/* Panels */
+section {
+    padding: 30px;
+}
+
+h2 {
+    font-size: 16px;
+    margin-bottom: 24px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+/* Trading Panel */
+.asset-tabs {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 16px;
+}
+
+.tab-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.tab-btn:hover {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.tab-btn.active {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.price-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.price-display .ticker {
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--text-secondary);
+}
+
+.price-display .current-price {
+    font-size: 36px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -1px;
+}
+
+.trade-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.trade-col {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.col-header {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-align: center;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+.buy-header { color: var(--accent-buy); }
+.sell-header { color: var(--accent-sell); }
+
+.input-group label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.btn-max {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--text-primary);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 700;
+    transition: background 0.2s;
+}
+.btn-max:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.input-group input {
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    color: #fff;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 18px;
+    outline: none;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.input-group input:focus {
+    border-color: #4c82ff;
+    box-shadow: 0 0 0 3px rgba(76, 130, 255, 0.1);
+}
+
+.total-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    font-size: 15px;
+    color: var(--text-secondary);
+}
+
+.total-display span:last-child {
+    font-weight: 600;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 16px;
+}
+
+.btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    color: #fff;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-buy {
+    background-color: var(--accent-buy);
+}
+
+.btn-buy:hover {
+    background-color: var(--accent-buy-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(14, 203, 129, 0.3);
+}
+
+.btn-buy:active {
+    transform: translateY(0);
+}
+
+.btn-sell {
+    background-color: var(--accent-sell);
+}
+
+.btn-sell:hover {
+    background-color: var(--accent-sell-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(246, 70, 93, 0.3);
+}
+
+.btn-sell:active {
+    transform: translateY(0);
+}
+
+/* Order History */
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+th, td {
+    padding: 16px;
+    text-align: right;
+    font-size: 14px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th {
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-align: right;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+th:first-child, td:first-child {
+    text-align: left;
+}
+
+tr {
+    transition: background-color 0.2s ease;
+}
+
+tr:hover td {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+.type-buy {
+    color: var(--accent-buy);
+    font-weight: 600;
+}
+
+.type-sell {
+    color: var(--accent-sell);
+    font-weight: 600;
+}
+
+.btn-cancel {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.btn-cancel:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-cancel:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background: transparent;
+    border-color: var(--border-color);
+    color: var(--text-secondary);
+}
+
+/* Price Flash Animations */
+@keyframes flash-green {
+    0% { color: var(--accent-buy); text-shadow: 0 0 10px rgba(14, 203, 129, 0.8); transform: scale(1.02); }
+    100% { color: #fff; text-shadow: none; transform: scale(1); }
+}
+
+@keyframes flash-red {
+    0% { color: var(--accent-sell); text-shadow: 0 0 10px rgba(246, 70, 93, 0.8); transform: scale(1.02); }
+    100% { color: #fff; text-shadow: none; transform: scale(1); }
+}
+
+.flash-up {
+    animation: flash-green 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.flash-down {
+    animation: flash-red 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Auth Overlay */
+.auth-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(11, 14, 20, 0.8);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-modal {
+    width: 400px;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-title {
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #ffffff 0%, #848e9c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.auth-subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+.auth-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.auth-error {
+    color: var(--accent-sell);
+    font-size: 13px;
+    text-align: center;
+    margin-top: 16px;
+    min-height: 18px;
+}
+
