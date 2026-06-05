@@ -457,3 +457,98 @@ tr:hover td {
     min-height: 18px;
 }
 
+/* What-If Calculator Styles */
+.what-if-calculator {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.what-if-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.calc-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.calc-inputs .input-group input {
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+    color: #fff;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.calc-inputs .input-group input:focus {
+    border-color: #4c82ff;
+    box-shadow: 0 0 0 3px rgba(76, 130, 255, 0.1);
+}
+
+.btn-calc {
+    background: linear-gradient(135deg, #3a6df0 0%, #1c4ed8 100%);
+    box-shadow: 0 4px 12px rgba(58, 109, 240, 0.25);
+    padding: 12px;
+    font-size: 14px;
+}
+
+.btn-calc:hover {
+    background: linear-gradient(135deg, #4f7ef7 0%, #2563eb 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(58, 109, 240, 0.35);
+}
+
+.btn-calc:active {
+    transform: translateY(0);
+}
+
+.calc-result-box {
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.calc-result-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.calc-result-row:last-child {
+    padding-top: 10px;
+    border-top: 1px solid var(--border-color);
+}
+
+.calc-profit {
+    color: var(--accent-buy) !important;
+    text-shadow: 0 0 10px rgba(14, 203, 129, 0.2);
+}
+
+.calc-loss {
+    color: var(--accent-sell) !important;
+    text-shadow: 0 0 10px rgba(246, 70, 93, 0.2);
+}
+
+

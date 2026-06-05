@@ -4,8 +4,8 @@ let orders = [];
 let currentAsset = 'BTC';
 
 const ASSET_INFO = {
-    BTC: { name: 'BTC (Bitcoin)', desc: 'Bitcoin USDT (Binance)' },
-    ETH: { name: 'ETH (Ethereum)', desc: 'Ethereum USDT (Binance)' }
+    BTC: { name: 'BTC (Bitcoin)', desc: 'Bitcoin USDT (Binance.US)' },
+    ETH: { name: 'ETH (Ethereum)', desc: 'Ethereum USDT (Binance.US)' }
 };
 
 // --- DOM Elements ---
@@ -44,6 +44,21 @@ const currentAssetName = document.getElementById('current-asset-name');
 const currentTickerDesc = document.getElementById('current-ticker-desc');
 const holdingsLabel = document.getElementById('holdings-label');
 const tabBtns = document.querySelectorAll('.tab-btn');
+
+// What-If Calculator DOM Elements
+const calcDateInput = document.getElementById('calc-date');
+const calcAmountInput = document.getElementById('calc-amount');
+const btnCalcSubmit = document.getElementById('btn-calc-submit');
+const calcResultBox = document.getElementById('calc-result-box');
+const calcPastPriceDisplay = document.getElementById('calc-past-price');
+const calcCurrentPriceDisplay = document.getElementById('calc-current-price');
+const calcQuantityDisplay = document.getElementById('calc-quantity');
+const calcCurrentValueDisplay = document.getElementById('calc-current-value');
+const calcProfitLossDisplay = document.getElementById('calc-profit-loss');
+
+// What-If Calculator State
+let loadedPastPrice = null;
+let loadedPastDate = null;
 
 // --- Auth & Fetch Logic ---
 let authToken = localStorage.getItem('token');
@@ -238,6 +253,11 @@ tabBtns.forEach(btn => {
         recalculateTotals();
         renderDashboard();
         
+        // Reset What-If calculator on tab change
+        loadedPastPrice = null;
+        loadedPastDate = null;
+        if (calcResultBox) calcResultBox.style.display = 'none';
+        
         if (typeof fetchChartData === 'function') fetchChartData();
     });
 });
@@ -256,6 +276,7 @@ setInterval(async () => {
                 if (asset === currentAsset) {
                     updatePriceUI(newPrice, oldPrice);
                     recalculateTotals();
+                    updateWhatIfCalculation();
                 }
                 shouldRenderDashboard = true;
             }
@@ -264,7 +285,7 @@ setInterval(async () => {
     } catch (e) {
         console.error('Failed to poll price', e);
     }
-}, 4000);
+}, 1000);
 
 function updatePriceUI(newPrice, oldPrice) {
     currentPriceDisplay.textContent = formatCurrency(newPrice);
@@ -532,3 +553,95 @@ if (authToken) {
 } else {
     showAuth();
 }
+
+// --- What-If Calculator Logic ---
+function updateWhatIfCalculation() {
+    if (loadedPastPrice === null) return;
+    
+    const amount = Number(calcAmountInput.value);
+    if (isNaN(amount) || amount <= 0) return;
+    
+    const currentPrice = prices[currentAsset];
+    const purchasedQty = amount / loadedPastPrice;
+    const currentValue = purchasedQty * currentPrice;
+    const profitLoss = currentValue - amount;
+    const roi = (profitLoss / amount) * 100;
+    
+    // Update UI elements
+    calcPastPriceDisplay.textContent = formatCurrency(loadedPastPrice);
+    calcCurrentPriceDisplay.textContent = formatCurrency(currentPrice);
+    calcQuantityDisplay.textContent = `${purchasedQty.toFixed(6)} ${currentAsset}`;
+    calcCurrentValueDisplay.textContent = formatCurrency(currentValue);
+    
+    // Format profitLoss display
+    const formattedROI = roi.toFixed(2);
+    const formattedProfit = formatCurrency(profitLoss);
+    
+    calcProfitLossDisplay.classList.remove('calc-profit', 'calc-loss');
+    if (profitLoss > 0) {
+        calcProfitLossDisplay.textContent = `+${formattedProfit} (+${formattedROI}%)`;
+        calcProfitLossDisplay.classList.add('calc-profit');
+    } else if (profitLoss < 0) {
+        calcProfitLossDisplay.textContent = `${formattedProfit} (${formattedROI}%)`;
+        calcProfitLossDisplay.classList.add('calc-loss');
+    } else {
+        calcProfitLossDisplay.textContent = `${formattedProfit} (0.00%)`;
+        calcProfitLossDisplay.style.color = 'var(--text-primary)';
+    }
+}
+
+if (btnCalcSubmit) {
+    btnCalcSubmit.addEventListener('click', async () => {
+        const dateVal = calcDateInput.value;
+        const amountVal = Number(calcAmountInput.value);
+        
+        if (!dateVal) {
+            alert('비교할 날짜를 선택해주세요.');
+            return;
+        }
+        if (!amountVal || amountVal <= 0) {
+            alert('올바른 투자 금액을 입력해주세요.');
+            return;
+        }
+        
+        btnCalcSubmit.textContent = '조회 중...';
+        btnCalcSubmit.disabled = true;
+        
+        try {
+            const res = await fetch(`/api/historical?asset=${currentAsset}&date=${dateVal}`);
+            const data = await res.json();
+            
+            if (res.ok) {
+                loadedPastPrice = data.closePrice;
+                loadedPastDate = data.foundDate;
+                
+                // Show result box and calculate
+                calcResultBox.style.display = 'flex';
+                calcResultBox.style.flexDirection = 'column';
+                updateWhatIfCalculation();
+            } else {
+                alert('조회 실패: ' + (data.error || '데이터가 없습니다.'));
+                loadedPastPrice = null;
+                loadedPastDate = null;
+                calcResultBox.style.display = 'none';
+            }
+        } catch (err) {
+            alert('서버 오류가 발생했습니다.');
+            loadedPastPrice = null;
+            loadedPastDate = null;
+            calcResultBox.style.display = 'none';
+        } finally {
+            btnCalcSubmit.textContent = '비교 계산하기';
+            btnCalcSubmit.disabled = false;
+        }
+    });
+}
+
+// Initialize Date picker max to yesterday
+if (calcDateInput) {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    calcDateInput.max = yesterday.toISOString().split('T')[0];
+}
+

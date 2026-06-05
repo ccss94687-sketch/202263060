@@ -34,7 +34,7 @@ function writeDB(data) {
 let prices = { BTC: 65000.00, ETH: 3500.00 };
 const INITIAL_SEED_MONEY = 100000000;
 
-// Fetch live prices every 4 seconds from Binance API
+// Fetch live prices every 1 second from Binance.US API
 async function fetchLivePrice() {
     try {
         const btcRes = await fetch('https://api.binance.us/api/v3/ticker/price?symbol=BTCUSDT');
@@ -51,9 +51,9 @@ async function fetchLivePrice() {
         console.error('Failed to fetch live price:', err.message);
     }
 }
-// Fetch initially and then every 4 seconds
+// Fetch initially and then every 1 second
 fetchLivePrice();
-setInterval(fetchLivePrice, 4000);
+setInterval(fetchLivePrice, 1000);
 
 // Auth Middleware
 function authenticateToken(req, res, next) {
@@ -129,6 +129,90 @@ app.get('/api/state', authenticateToken, (req, res) => {
 // Get just the live price
 app.get('/api/price', (req, res) => {
     res.json({ prices: prices });
+});
+
+// Get historical price for a specific asset and date
+app.get('/api/historical', async (req, res) => {
+    const { asset, date } = req.query;
+    if (!asset || !date) {
+        return res.status(400).json({ error: 'Asset and date are required' });
+    }
+    if (!['BTC', 'ETH'].includes(asset)) {
+        return res.status(400).json({ error: 'Invalid asset. Must be BTC or ETH' });
+    }
+
+    // Validate date format YYYY-MM-DD
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(date)) {
+        return res.status(400).json({ error: 'Invalid date format. Use YYYY-MM-DD' });
+    }
+
+    try {
+        const symbol = asset === 'ETH' ? 'ETH-USD' : 'BTC-USD';
+        const dateParts = date.split('-');
+        const selectedDate = new Date(Date.UTC(Number(dateParts[0]), Number(dateParts[1]) - 1, Number(dateParts[2])));
+        const start = Math.floor(selectedDate.getTime() / 1000);
+        const end = start + (86400 * 5); // 5 days range to ensure we capture the date and weekend etc
+
+        const url = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?period1=${start}&period2=${end}&interval=1d`;
+        
+        const response = await fetch(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            }
+        });
+        
+        if (!response.ok) {
+            return res.status(500).json({ error: `Failed to fetch data from Yahoo Finance: ${response.statusText}` });
+        }
+        
+        const data = await response.json();
+        const result = data.chart?.result?.[0];
+        if (!result || !result.timestamp || !result.indicators?.quote?.[0]?.close) {
+            return res.status(404).json({ error: 'No historical data found for this date' });
+        }
+        
+        let closePrice = null;
+        let foundDateStr = null;
+        
+        for (let i = 0; i < result.timestamp.length; i++) {
+            const d = new Date(result.timestamp[i] * 1000);
+            const yyyy = d.getUTCFullYear();
+            const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+            const dd = String(d.getUTCDate()).padStart(2, '0');
+            const dateStr = `${yyyy}-${mm}-${dd}`;
+            
+            if (dateStr === date) {
+                closePrice = result.indicators.quote[0].close[i];
+                foundDateStr = dateStr;
+                break;
+            }
+        }
+        
+        // If not found exactly, just take the first element (which is the start of the query period)
+        if (closePrice === null && result.indicators.quote[0].close.length > 0) {
+            closePrice = result.indicators.quote[0].close[0];
+            const d = new Date(result.timestamp[0] * 1000);
+            const yyyy = d.getUTCFullYear();
+            const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+            const dd = String(d.getUTCDate()).padStart(2, '0');
+            foundDateStr = `${yyyy}-${mm}-${dd}`;
+        }
+        
+        if (closePrice === null || isNaN(closePrice)) {
+            return res.status(404).json({ error: 'Close price not found for the requested date range' });
+        }
+        
+        res.json({
+            asset: asset,
+            requestedDate: date,
+            foundDate: foundDateStr,
+            closePrice: parseFloat(closePrice.toFixed(2))
+        });
+    } catch (err) {
+        console.error('Error fetching historical price:', err);
+        res.status(500).json({ error: 'Internal server error while fetching historical price' });
+    }
 });
 
 // Create an order

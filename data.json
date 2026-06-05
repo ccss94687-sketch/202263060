@@ -47,6 +47,42 @@
       "fee": 49957.87572,
       "status": "active",
       "timestamp": 1779947628658
+    },
+    {
+      "id": "a05bc932-4df1-4f9a-b2f0-9519ece0db33",
+      "userId": "d0ed91d9-f4ac-4b63-b59b-3c0efb666b63",
+      "type": "sell",
+      "asset": "BTC",
+      "quantity": 1368,
+      "price": 73102.73,
+      "totalAmount": 100004534.64,
+      "fee": 50002.26732,
+      "status": "active",
+      "timestamp": 1779951396461
+    },
+    {
+      "id": "5821c846-ed7d-46e0-8a79-d336ca3f8ff0",
+      "userId": "d0ed91d9-f4ac-4b63-b59b-3c0efb666b63",
+      "type": "buy",
+      "asset": "BTC",
+      "quantity": 1367,
+      "price": 73102.73,
+      "totalAmount": 99931431.91,
+      "fee": 49965.715955,
+      "status": "active",
+      "timestamp": 1779951402036
+    },
+    {
+      "id": "cec21848-21c3-45e9-8acd-0aaffdfd403c",
+      "userId": "d0ed91d9-f4ac-4b63-b59b-3c0efb666b63",
+      "type": "sell",
+      "asset": "BTC",
+      "quantity": 1367,
+      "price": 73180.11,
+      "totalAmount": 100037210.37,
+      "fee": 50018.605185,
+      "status": "cancelled",
+      "timestamp": 1779951936762
     }
   ]
 }
